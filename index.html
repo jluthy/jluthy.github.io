@@ -41,8 +41,8 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(0,212,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.08) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: 0;
@@ -521,10 +521,14 @@
       border: 1px solid var(--border);
       border-left: 3px solid var(--accent3);
       position: relative;
-      transition: border-left-color 0.2s;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+      cursor: pointer;
     }
 
-    .pub-item:hover { border-left-color: var(--accent); }
+    .pub-item:hover { border-left-color: var(--accent); background: var(--surface2); }
 
     .pub-journal {
       font-family: var(--mono);
@@ -546,6 +550,20 @@
     .pub-authors {
       font-size: 0.9rem;
       color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .pub-authors .me {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .pub-doi {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      margin-top: 0.6rem;
+      letter-spacing: 0.04em;
     }
 
     .pub-year {
@@ -623,6 +641,32 @@
       font-size: 0.7rem;
       color: var(--text-dim);
       letter-spacing: 0.08em;
+    }
+
+    /* ── TOAST NOTIFICATION ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      padding: 0.85rem 1.75rem;
+      border-radius: 2px;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      box-shadow: 0 0 20px rgba(0,212,255,0.2);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* ── ANIMATIONS ── */
@@ -736,8 +780,8 @@
         to single-cell RNA sequencing to TCR repertoire analysis.
       </p>
       <p>
-        Currently, I work as a <strong>Computational Immunology Scientist at Marker Therapeutics</strong>,
-        where I architect end-to-end TCR repertoire pipelines for longitudinal clinical trial datasets,
+        Most recently, I served as a <strong>contract Computational Immunology Scientist for Marker Therapeutics</strong>,
+        where I architected end-to-end TCR repertoire pipelines for longitudinal clinical trial datasets,
         integrating immune dynamics with clinical response categories to inform translational decisions.
       </p>
       <p>
@@ -762,8 +806,10 @@
         <div class="skill-tag">Flow Cytometry</div>
         <div class="skill-tag purple">Java / FlowJo Plugins</div>
         <div class="skill-tag purple">S4 Object Systems</div>
-        <div class="skill-tag green">Clonal Expansion AUC</div>
-        <div class="skill-tag green">Clinical Data Integration</div>
+        <div class="skill-tag green">LLM / RAG Pipelines</div>
+        <div class="skill-tag green">AI-Assisted Workflows</div>
+        <div class="skill-tag">Clonal Expansion AUC</div>
+        <div class="skill-tag">Clinical Data Integration</div>
       </div>
     </div>
   </div>
@@ -893,18 +939,20 @@
     <div class="section-line"></div>
   </div>
   <div class="pub-list">
-    <div class="pub-item">
+    <a href="https://doi.org/10.3389/fimmu.2022.1007016" target="_blank" class="pub-item">
       <div class="pub-year">2022</div>
       <div class="pub-journal">Frontiers in Immunology</div>
       <div class="pub-title">Integrated machine learning approaches for flow cytometric quantification of myeloid-derived suppressor cells in acute sepsis</div>
-      <div class="pub-authors">Luthy J. et al. · Frontiers in Immunology, 2022</div>
-    </div>
-    <div class="pub-item" style="border-left-color:var(--accent2);">
+      <div class="pub-authors">Bonavia AS, Samuelsen A, <span class="me">Luthy J</span>, Halstead ES</div>
+      <div class="pub-doi">doi: 10.3389/fimmu.2022.1007016 ↗</div>
+    </a>
+    <a href="https://doi.org/10.3389/fimmu.2022.953151" target="_blank" class="pub-item" style="border-left-color:var(--accent2);">
       <div class="pub-year">2022</div>
       <div class="pub-journal" style="color:var(--accent2);">Frontiers in Immunology</div>
       <div class="pub-title">Hepatic iNKT cells produce type 2 cytokines and restrain antiviral T cells during acute hepacivirus infection</div>
-      <div class="pub-authors">Collaboration contribution · Frontiers in Immunology, 2022</div>
-    </div>
+      <div class="pub-authors">Raus S, Lopez-Scarim J, <span class="me">Luthy J</span>, Billerbeck E</div>
+      <div class="pub-doi">doi: 10.3389/fimmu.2022.953151 ↗</div>
+    </a>
   </div>
 </section>
 
@@ -921,7 +969,7 @@
           Open to senior and principal-level roles in computational immunology,
           translational bioinformatics, and applied ML for life sciences.
         </p>
-        <a href="mailto:jluthy123@gmail.com" class="btn btn-primary">Send an Email</a>
+        <button onclick="copyEmail()" class="btn btn-primary" id="copy-email-btn">Copy Email Address</button>
       </div>
       <div class="contact-links">
         <a href="https://github.com/jluthy" target="_blank" class="contact-link">
@@ -938,7 +986,7 @@
         </a>
         <div class="contact-link" style="cursor:default;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          Ocean View, Hawaiʻi
+          Kailua-Kona, Hawaiʻi
         </div>
       </div>
     </div>
@@ -950,6 +998,9 @@
   <p>© 2025 Joshua Luthy · Built with intent.</p>
   <p>jluthy.github.io</p>
 </footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Email copied to clipboard</div>
 
 <script>
 // ── HERO CANVAS — animated node graph ──
@@ -1339,6 +1390,26 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
   drawClonal();
 });
+
+// ── COPY EMAIL TO CLIPBOARD ──
+function copyEmail() {
+  navigator.clipboard.writeText('jluthy123@gmail.com').then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = 'jluthy123@gmail.com';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
 </script>
 </body>
 </html>
