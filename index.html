@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joshua Luthy | Computational Immunologist</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="widget/widget.css">
+  <link rel="stylesheet" href="widget/theme-dark.css">
   <style>
     :root {
       --bg: #050a0e;
@@ -914,6 +916,7 @@
       <button class="demo-tab active" onclick="switchTab('clonal')">Clonal Expansion</button>
       <button class="demo-tab" onclick="switchTab('umap')">UMAP / Clusters</button>
       <button class="demo-tab" onclick="switchTab('repertoire')">Repertoire Diversity</button>
+      <button class="demo-tab" onclick="switchTab('immunolit')">Immunology Corpus (Live)</button>
     </div>
 
     <div id="tab-clonal" class="demo-panel active">
@@ -929,6 +932,14 @@
     <div id="tab-repertoire" class="demo-panel">
       <div class="demo-label">// Repertoire diversity metrics — Apheresis vs. Product (Shannon Entropy, Clonality, Richness, D50)</div>
       <canvas id="repertoire-canvas" height="380" style="width:100%"></canvas>
+    </div>
+
+    <div id="tab-immunolit" class="demo-panel">
+      <div class="demo-label">// immunolit-rag — RAG + concept-graph search over 691 real, live-ingested PubMed immunology abstracts. Ask it a question.</div>
+      <div class="immunolit-embed-dark">
+        <div id="immunolit-chat-root"></div>
+        <div id="immunolit-cluster-root"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1004,6 +1015,9 @@
 <!-- TOAST -->
 <div class="toast" id="toast">Email copied to clipboard</div>
 
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="widget/chat-widget.js"></script>
+<script src="widget/cluster-view.js"></script>
 <script>
 // ── HERO CANVAS — animated node graph ──
 const heroCanvas = document.getElementById('hero-canvas');
@@ -1056,6 +1070,13 @@ function drawHero() {
 drawHero();
 
 // ── DEMO TABS ──
+// TODO: replace once immunolit-rag's backend is deployed to a cloud VM
+// (Phase A is embed-only; deployment is a separate, not-yet-done step).
+// Until then this tab shows the widget's own graceful "backend
+// unavailable" fallback rather than a broken page.
+const IMMUNOLIT_API = 'https://your-backend-url-goes-here';
+let immunolitInitialized = false;
+
 function switchTab(name) {
   document.querySelectorAll('.demo-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
@@ -1064,6 +1085,13 @@ function switchTab(name) {
   if (name === 'clonal') drawClonal();
   if (name === 'umap') drawUMAP();
   if (name === 'repertoire') drawRepertoire();
+  if (name === 'immunolit' && !immunolitInitialized) {
+    immunolitInitialized = true;
+    window.initImmunolitChat('immunolit-chat-root', IMMUNOLIT_API);
+    window.initImmunolitClusterView('immunolit-cluster-root', IMMUNOLIT_API, {
+      plotBg: '#0b1520', paperBg: '#0b1520', fontColor: '#e8f4f8', gridColor: '#1a2e42'
+    });
+  }
 }
 
 // ── CLONAL EXPANSION CHART — fixed data, 5 clonotypes ──
